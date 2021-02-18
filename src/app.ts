@@ -46,6 +46,36 @@ function autobind(target: any, methodName: string, descriptor: PropertyDescripto
 	return adjDescriptor
 }
 
+// ProjectList Class
+class ProjectList {
+	templateEl: HTMLTemplateElement
+	hostEl: HTMLDivElement
+	element: HTMLElement
+
+	constructor(private type: 'active' | 'finished') {
+		this.templateEl = document.getElementById('project-list')! as HTMLTemplateElement
+		this.hostEl = document.getElementById('app')! as HTMLDivElement
+
+		const importedNode = document.importNode(this.templateEl.content, true)
+		this.element = importedNode.firstElementChild as HTMLElement
+		this.element.id = `${this.type}-projects`
+
+		this.attach()
+		this.renderContent()
+	}
+
+	private renderContent() {
+		const listId = `${this.type}-projects-list`
+		this.element.querySelector('ul')!.id = listId
+		this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + ' PROJECTS'
+	}
+
+	private attach() {
+		this.hostEl.appendChild(this.element)
+	}
+}
+
+// ProjectInput Class
 class ProjectInput {
 	templateEl: HTMLTemplateElement
 	hostEl: HTMLDivElement
@@ -117,7 +147,6 @@ class ProjectInput {
 
 		if (Array.isArray(userInput)) {
 			const [title, desc, people] = userInput
-			console.log(title, desc, people)
 			this.clearInputs()
 		}
 	}
@@ -132,3 +161,5 @@ class ProjectInput {
 }
 
 const prjInput = new ProjectInput()
+const activePrjList = new ProjectList('active')
+const finishedPrjList = new ProjectList('finished')
